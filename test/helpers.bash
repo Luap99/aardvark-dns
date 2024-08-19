@@ -534,28 +534,14 @@ function basic_host_setup() {
     IP_COUNT=0
 }
 
-function setup_slirp4netns() {
-    command -v slirp4netns || die "slirp4netns not installed"
+function setup_pasta() {
+    command -v pasta || die "pasta not installed"
 
-    slirp4netns -c $HOST_NS_PID tap0 &>"$AARDVARK_TMPDIR/slirp4.log" &
-    SLIRP4NETNS_PID=$!
+    pasta --dns-forward "169.254.0.1" --netns /proc/$HOST_NS_PID/ns/net
 
-    # create new resolv.conf with slirp4netns dns
-    echo "nameserver 10.0.2.3" >"$AARDVARK_TMPDIR/resolv.conf"
+    # create new resolv.conf with pasta dns
+    echo "nameserver 169.254.0.1" >"$AARDVARK_TMPDIR/resolv.conf"
     run_in_host_netns mount --bind "$AARDVARK_TMPDIR/resolv.conf" /etc/resolv.conf
-
-    local timeout=6
-    while [[ $timeout -gt 1 ]]; do
-        run_in_host_netns ip addr
-        if [[ "$output" =~ "tap0" ]]; then
-            return
-        fi
-        sleep 1
-        let timeout=$timeout-1
-    done
-
-    cat "$AARDVARK_TMPDIR/slirp4.log"
-    die "Timed out waiting for slirp4netns to start"
 }
 
 function basic_teardown() {

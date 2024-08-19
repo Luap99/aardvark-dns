@@ -6,7 +6,7 @@
 load helpers
 
 @test "two containers on different networks" {
-	setup_slirp4netns
+	setup_pasta
 
 	# container a1 on subnet a
 	subnet_a=$(random_subnet 5)

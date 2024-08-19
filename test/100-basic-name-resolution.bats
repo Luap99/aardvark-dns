@@ -9,7 +9,7 @@ load helpers
 # hence all the external request must fail, this test is expected to fail
 # with exit code 124
 @test "basic container - dns itself (custom bad dns server)" {
-	setup_slirp4netns
+	setup_pasta
 
 	subnet_a=$(random_subnet 5)
 	create_config network_name="podman1" container_id=$(random_string 64) container_name="aone" subnet="$subnet_a" custom_dns_server='"127.0.0.255"' aliases='"a1", "1a"'
@@ -31,7 +31,7 @@ load helpers
 # custom DNS server is set to `8.8.8.8, 1.1.1.1` which is valid DNS server
 # hence all the external request must paas.
 @test "basic container - dns itself (custom good dns server)" {
-	setup_slirp4netns
+	setup_pasta
 
 	subnet_a=$(random_subnet 5)
 	create_config network_name="podman1" container_id=$(random_string 64) container_name="aone" subnet="$subnet_a" custom_dns_server='"8.8.8.8","1.1.1.1"' aliases='"a1", "1a"'
@@ -56,7 +56,7 @@ load helpers
 }
 
 @test "basic container - dns itself custom" {
-	setup_slirp4netns
+	setup_pasta
 
 	subnet_a=$(random_subnet 5)
 	create_config network_name="podman1" container_id=$(random_string 64) container_name="aone" subnet="$subnet_a" aliases='"a1", "1a"'
@@ -96,7 +96,7 @@ load helpers
 }
 
 @test "basic container - ndots incomplete bad entry must NXDOMAIN instead of forwarding and timing out" {
-	setup_slirp4netns
+	setup_pasta
 
 	subnet_a=$(random_subnet 5)
 	create_config network_name="podman1" container_id=$(random_string 64) container_name="aone" subnet="$subnet_a" aliases='"a1", "1a"'
@@ -110,7 +110,7 @@ load helpers
 }
 
 @test "basic container - dns itself on container with ipaddress v6" {
-	setup_slirp4netns
+	setup_pasta
 
 	subnet_a=$(random_subnet 6)
 	create_config network_name="podman1" container_id=$(random_string 64) container_name="aone" subnet="$subnet_a" aliases='"a1", "1a"'
@@ -185,7 +185,7 @@ load helpers
 # Internal network, meaning no DNS servers.
 # Hence all external requests must fail.
 @test "basic container - internal network has no DNS" {
-	setup_slirp4netns
+	setup_pasta
 
 	subnet_a=$(random_subnet)
 	create_config network_name="podman1" internal=true container_id=$(random_string 64) container_name="aone" subnet="$subnet_a" custom_dns_server='"1.1.1.1","8.8.8.8"' aliases='"a1", "1a"'
@@ -209,7 +209,7 @@ load helpers
 
 # Internal network, but this time with IPv6. Same result as above expected.
 @test "basic container - internal network has no DNS - ipv6" {
-	setup_slirp4netns
+	setup_pasta
 
 	subnet_a=$(random_subnet 6)
 	# Cloudflare and Google public anycast DNS v6 nameservers
